@@ -49,9 +49,10 @@ def pull_lever(current_state_and_reward):
 def run_trial(initial_state, k=100):
     '''takes an initial state DF and returns a DF with k trials'''
     data = initial_state[:] 
-    #python weirdness: very important to take slice, 
-    #                  otherwise just get pointer to original, which will
-    #                  in this instance modify var in global scope
+    #python weirdness haiku (by NB): 
+    #          Beware the arrow, 
+    #          pointing to the original,
+    #          slice, but cut nothing
     for i in range(k):
         result = pull_lever(data[-1])
         data += [result]
@@ -61,16 +62,14 @@ def compute_pull_avg(trial):
     initial_data = np.array(trial[1:])
     n = initial_data.shape[0]
     reward = initial_data[:,1].sum()
-    print initial_data[:,1]
-    print n
+#    print(initial_data[:,1])
+#    print(n)
     return reward/n
 
-run_trial(initial_state_and_reward,100)
+trial_data = run_trial(initial_state_and_reward,100000)
 
-compute_pull_avg(run_trial(initial_state_and_reward,100000))
+compute_pull_avg(trial_data)
 
-#generate many trials and record all
+trial_data = pd.DataFrame(data = trial_data[1:], columns = trial_data[0])
 
-random.random()
-
-(1.25/2.91*1)+(0.16/2.91*2)
+trial_data
